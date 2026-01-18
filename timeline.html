@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 15 Page Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Nanum+Pen+Script&family=Poppins:wght@300;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- PALETTE --- */
+        :root {
+            --bg-dark: #561C24;
+            --bg-light: #6D2932;
+            --paper: #E8D8C4;
+            --paper-shadow: #d1c1ad;
+            --text-main: #2b0e12;
+            --accent: #C7B7A3;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            background: radial-gradient(circle, var(--bg-light) 0%, var(--bg-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            overflow: hidden;
+            perspective: 2500px;
+        }
+
+        .header {
+            position: absolute;
+            top: 20px;
+            color: var(--paper);
+            text-align: center;
+            z-index: 100;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .header h2 {
+            font-size: 2rem;
+            font-style: italic;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        /* --- BOOK CONTAINER --- */
+        .book-scene {
+            width: 320px;
+            height: 500px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s ease-in-out;
+            margin: 0;
+        }
+
+        /* STATE 1: Book Open (Spine Centered) */
+        .book-scene.is-open {
+            transform: translateX(160px);
+        }
+
+        /* STATE 2: Book Finished (Back Cover Centered) */
+        /* We move it 320px so the flipped page (which is to the left of spine) sits in the center */
+        .book-scene.is-finished {
+            transform: translateX(320px);
+        }
+
+        .book {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        /* --- PAGE STYLING --- */
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+            cursor: pointer;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            padding: 25px;
+            background-color: var(--paper);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            border-radius: 12px;
+            box-shadow: inset 8px 0 10px rgba(0, 0, 0, 0.05);
+            z-index: 2;
+        }
+
+        .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            padding: 30px;
+            transform: rotateY(180deg);
+            background-color: #e0d0b8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: inset -8px 0 10px rgba(0, 0, 0, 0.05);
+            z-index: 1;
+        }
+
+        .page.flipped {
+            transform: rotateY(-180deg);
+        }
+
+        /* --- CONTENT STYLES --- */
+        .photo-frame {
+            background: white;
+            padding: 8px 8px 25px 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 2px;
+            transform: none;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            display: block;
+            border: 1px solid #f0f0f0;
+        }
+
+        .caption {
+            font-family: 'Nanum Pen Script', cursive;
+            font-size: 1.6rem;
+            color: var(--text-main);
+            margin-top: 15px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .message {
+            font-family: 'Nanum Pen Script', cursive;
+            font-size: 1.5rem;
+            color: #4a151c;
+            line-height: 1.5;
+            width: 100%;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 12px;
+            font-size: 0.8rem;
+            font-family: 'Poppins', sans-serif;
+            color: #999;
+        }
+
+        .expiry-stamp {
+            border: 3px solid #c0392b;
+            color: #c0392b;
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            transform: rotate(-10deg);
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        /* UPDATED BUTTON STYLE */
+        .renew-btn {
+            /* CHANGE BACKGROUND COLOR HERE (e.g., #000000 is black, #ff0000 is red) */
+            background: #421319;
+
+            /* CHANGE TEXT COLOR HERE */
+            color: #ffffff;
+
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            /* 50px makes it round, 5px makes it square */
+
+            /* CHANGE FONT HERE (Options: 'Poppins', 'Playfair Display', 'Arial') */
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            display: inline-block;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            font-size: 1rem;
+            border: none;
+        }
+
+        .renew-btn:hover {
+            /* CHANGE HOVER COLOR HERE */
+            background: #000000;
+            transform: scale(1.05);
+        }
+
+        .close-btn {
+            background: transparent;
+            color: #555;
+            border: 1px solid #999;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+        }
+
+        .close-btn:hover {
+            background: #555;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            .book-scene {
+                width: 85vw;
+                height: 60vh;
+            }
+
+            .book-scene.is-open {
+                transform: translateX(42.5vw);
+            }
+
+            /* On mobile, full shift might be too much, adjust slightly */
+            .book-scene.is-finished {
+                transform: translateX(85vw);
+            }
+
+            .photo-frame img {
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h2>The Archives</h2>
+        <p></p>
+    </div>
+
+    <div class="book-scene" id="book-scene">
+        <div class="book">
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic1.jpeg" alt="Memory"></div>
+                    <p class="caption">The Beginning
+                        (Flipbook)
+                    </p>
+                    <p class="caption">20-01-2025</p>
+                    <div class="page-number">1</div>
+                </div>
+                <div class="back">
+                    <h2>Sweet lil penpal</h2>
+                    <p class="message">I just can't forget that day when i just randomly made my account and forget it
+                        but next day somehow i recieved tons of penpal from which i decided to reply to yours only, you
+                        sadelu insaan hmphh...</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic2.jpeg" alt="Memory"></div>
+                    <p class="caption">First Interaction was so cute (I Hate You BTW)</p>
+                    <div class="page-number">2</div>
+                </div>
+                <div class="back">
+                    <p class="message">We were strangers still you had the audacity to irritate me like no one else had
+                        ever did, but honestly it was fun knowing you, and the thing is i never found you boring nomi
+                        nomi never ever you're the most interesting person i've ever met till now.</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic3.jpeg" alt="Memory"></div>
+                    <p class="caption">But I agree i loved annoying you that time and i still do</p>
+                    <div class="page-number">3</div>
+                </div>
+                <div class="back">
+                    <p class="message">But my cutie pie decided to disappear for 1 day straight without telling, i was
+                        so angry dyk that? ik we were not good friends but still, then i remebered that you gave me you
+                        insta id which was a spam account which i was scared to talk on but okayy</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic4.jpeg" alt="Memory"></div>
+                    <p class="caption">And you suddenly ghosted me...</p>
+                    <div class="page-number">4</div>
+                </div>
+                <div class="back">
+                    <p class="message">I genuinely thought you were a creep when you shared your i'd out of nowhere but
+                        at that moment of time i just want to know more about you and the things you know about ignoring
+                        the fact that you are a doctore because because? bol;ein because I....</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic5.jpeg" alt="Memory"></div>
+                    <p class="caption">Noman-e-Tandoor bnane ka jo dil tha mera</p>
+                    <div class="page-number">5</div>
+                </div>
+                <div class="back">
+                    <p class="message">It was so so so good idk how to decribe in words, but sometines i just used to
+                        ask myself that why are you so annoying sometimes? but in a cute wayyy. I even wanted to pinch
+                        your cheecks arghhh kuchi puchii, no offence but i find you super cuteee in a handsome wayy.
+                    </p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic6.jpeg" alt="Memory"></div>
+                    <p class="caption">The Banters and Jokes</p>
+                    <div class="page-number">6</div>
+                </div>
+                <div class="back">
+                    <p class="message">It was going so well mashaallah se ramadan bhi start ho gya tha but inn janab ko
+                        pange krne ka kitna shok haii kitna bura bole the mujhe i was so hurt, i legitally decieded ki
+                        ab kabhi baat nhi kroongi aur me genuinely nhi krti you can ask my ex-friends once i decide to,
+                        pr aap to sbse different sbse alg itna pyara message kra kaise nhi maanti</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic7.jpeg" alt="Memory"></div>
+                    <p class="caption">Our first fight uffff.. Dekhein aapne mujhe kitni buri aadat lagwayi hai apni!!!
+                    </p>
+                    <div class="page-number">7</div>
+                </div>
+                <div class="back">
+                    <p class="message">I like everything about you except that personality jisme you became stranger,
+                        khadoos, cold, and what not. It made me cry so many times, I don't like when i dont recieve the
+                        same energy and efforts back from the person i like doing everything for, you promise breaker
+                    </p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic8.jpeg" alt="Memory"></div>
+                    <p class="caption">Bas I don't like that sadu aadmi jo aapke andar hai, No efforts nomi nomi</p>
+                    <div class="page-number">8</div>
+                </div>
+                <div class="back">
+                    <p class="message">Dekhein starting se i was noticing sb kuch phla aapka spam
+                        account, phir somehow you were removing me from everywhere, pinterest, letterboxd, insta first i
+                        was puzzled but i figured it out that you don't want me aywhere where you your friends or family
+                        or whatever i was not allowed in your personal space when you were allowed in mine.</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic9.jpeg" alt="Memory"></div>
+                    <p class="caption">Promise Breaker</p>
+                    <div class="page-number">9</div>
+                </div>
+                <div class="back">
+                    <p class="message">I got sad so many times thinking about it, But yk when i cried when you didn't
+                        defended me infront of your friend because of whatever fear, and you deleted your account and my
+                        board got deleted too, then you removed me from letterboxd it was hurtful, aapke liye choti baat
+                        hogi mere liye nhi thi. I was forced to think you never cared about me or my feelings.</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic10.jpeg" alt="Memory"></div>
+                    <p class="caption">(Your words are comforting but your actions are not, they never
+                        were.)</p>
+                    <div class="page-number">10</div>
+                </div>
+                <div class="back">
+                    <p class="message">But kuch bhi ho jaye idk how many times i got hurt, I somehow i can't stand you
+                        angry with me. Ufff.. Idk it feels so bad, uncomfortable, something missing, isiliye bewakoofon
+                        ki trh apni self respect ki aisi taisi krke manane aa jati, I don't like it when you're angry,
+                        sad, or mad at me. I love when you smile or you're happy happy.</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic11.jpeg" alt="Memory"></div>
+                    <p class="caption"> I want you to sound exactly like how you sound when you're with hoor.</p>
+                    <div class="page-number">11</div>
+                </div>
+                <div class="back">
+                    <p class="message">Uss din maine masti me phone no. maanga tha but aapne sachii taal diya i agree
+                        mujhe gussa aya aapne mana kaise kiya without any second thought maine dobara maanga and you
+                        told me that aapne mera number save nhi kiya it was heartbreaking i got tears ki i was right
+                        about all my assumptions so gusse me i deactivated.</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic12.jpeg" alt="Memory"></div>
+                    <p class="caption">The time I thought it's 101% over</p>
+                    <div class="page-number">12</div>
+                </div>
+                <div class="back">
+                    <p class="message">Aaap sachii me nhi aaye nomann, uff it's okay mere sath nhi hoga to kiske sath
+                        hoga, at the end i reactivated my account aur poora gussa nikala kyunki or kya kr skti i don't
+                        own you. Pr yahaan to scene hi kuch aur tha aapne to mujhe mujhse phle disown kr diya tha ki
+                        you'll leave anyway 1-2 saal me shadi ho jayegi and what not i should leave.</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic13.jpeg" alt="Memory"></div>
+                    <p class="caption">How you made me cry like a baby infront of so many people</p>
+                    <div class="page-number">13</div>
+                </div>
+                <div class="back">
+                    <p class="message">Even when things were bad, we didn't give up, and we shouldn't aapne hi bola tha
+                        talk and solve, lekin you're the only one who gave up on us first aapko pta hai vo restaurant me
+                        itne handsome handsome doctors baithe the vahan aur meri naak beh rhi thi hmphh... Itna smile kr
+                        rhe the mujhe dekh kr phir aapka message dekh kr me jo royi jo royi. Doctors chle gye!!</p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic14.jpeg" alt="Memory"></div>
+                    <p class="caption">I wish those type of things never happens again~</p>
+                    <div class="page-number">14</div>
+                </div>
+                <div class="back">
+                    <p class="message">Pr khairr Allah kabhi kisi ke haq me glt nhi hone dete, jo bhi hua jaise bhi hua
+                        jitna bhi hua, the thing is hogya and ab agar aapne aisa vaisa kuch bhi kiya to me aapko jaan se
+                        maar doongi!!! Mark my words Mr. Handsome, kya matlab handsome hain to kuch bhi kreinge hmphh...
+                    </p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="front">
+                    <div class="photo-frame"><img src="pic15.jpeg" alt="Memory"></div>
+                    <p class="caption">Aaayeinn hug krein shabaashh</p>
+                    <div class="page-number">15</div>
+                </div>
+                <div class="back">
+                    <div class="expiry-stamp">SUBSCRIPTION EXPIRED</div>
+                    <p class="message" style="font-size: 1.2rem;">
+                        Subscription of 365 days has ended. <br>
+                        To continue tolerating Alfi, please renew.
+                    </p>
+                    <a href="xyz.html" class="renew-btn">Renew Friendship</a>
+                    <button class="close-btn" onclick="closeBook(event)">Close Book</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const pages = document.querySelectorAll('.page');
+        const bookScene = document.getElementById('book-scene');
+        const totalPages = pages.length;
+
+        pages.forEach((page, index) => {
+            page.style.zIndex = totalPages - index;
+        });
+
+        pages.forEach((page, index) => {
+            page.onclick = function () {
+
+                // --- SMART CENTER LOGIC ---
+
+                // 1. OPENING: If Page 1 is clicked (Start)
+                if (index === 0 && !this.classList.contains('flipped')) {
+                    bookScene.classList.add('is-open');
+                    bookScene.classList.remove('is-finished');
+                }
+
+                // 2. FINISHING: If Last Page is clicked (End)
+                if (index === totalPages - 1 && !this.classList.contains('flipped')) {
+                    bookScene.classList.remove('is-open');
+                    bookScene.classList.add('is-finished');
+                }
+
+                // 3. GOING BACK: If Last Page is un-clicked (Back from End)
+                if (index === totalPages - 1 && this.classList.contains('flipped')) {
+                    bookScene.classList.remove('is-finished');
+                    bookScene.classList.add('is-open');
+                }
+
+                // 4. CLOSING: If Page 1 is un-clicked (Back to Cover)
+                if (index === 0 && this.classList.contains('flipped')) {
+                    bookScene.classList.remove('is-open');
+                    bookScene.classList.remove('is-finished');
+                }
+
+                // --- FLIP LOGIC ---
+                if (!this.classList.contains('flipped')) {
+                    this.classList.add('flipped');
+                    this.style.zIndex = index + 1;
+                } else {
+                    this.classList.remove('flipped');
+                    this.style.zIndex = totalPages - index;
+                }
+            };
+        });
+
+        function closeBook(event) {
+            event.stopPropagation();
+
+            // Reset position to center immediately
+            bookScene.classList.remove('is-open');
+            bookScene.classList.remove('is-finished');
+
+            // Close all pages
+            const reversedPages = Array.from(pages).reverse();
+            reversedPages.forEach((page, i) => {
+                if (page.classList.contains('flipped')) {
+                    setTimeout(() => {
+                        page.classList.remove('flipped');
+                        page.style.zIndex = totalPages - (pages.length - 1 - i);
+                    }, i * 50); // Faster close animation
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

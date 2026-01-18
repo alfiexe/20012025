@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renewal Agreement</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* --- PALETTE --- */
+        :root {
+            --bg-dark: #561C24;
+            --bg-light: #6D2932;
+            --paper: #F2E8DC;
+            --text-main: #2b0e12;
+            --accent: #c0392b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 0;
+            min-height: 100vh;
+            background: radial-gradient(circle, var(--bg-light) 0%, var(--bg-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            overflow-y: auto;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        .container {
+            position: relative;
+            background: var(--paper);
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+            background-size: 100% 30px;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 50px;
+        }
+
+        .stamp-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 20px;
+        }
+
+        .seal {
+            width: 80px;
+            height: 80px;
+            border: 3px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 auto 15px auto;
+            transform: rotate(-15deg);
+            opacity: 0.8;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--text-main);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .terms-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .term {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            font-size: 0.95rem;
+            color: #333;
+            line-height: 1.6;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .term:hover {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .checkbox {
+            min-width: 24px;
+            height: 24px;
+            border: 2px solid var(--bg-dark);
+            border-radius: 4px;
+            margin-right: 15px;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: 0.2s;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        .term.checked .checkbox {
+            background: var(--bg-dark);
+            border-color: var(--bg-dark);
+        }
+
+        .term.checked .checkbox::after {
+            content: '✓';
+        }
+
+        .bold {
+            font-weight: 600;
+            color: var(--bg-dark);
+            display: block;
+            margin-bottom: 4px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            border-bottom: 1px dashed #ccc;
+            /* Added underline for contract feel */
+            padding-bottom: 2px;
+            width: fit-content;
+        }
+
+        .action-area {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn-accept {
+            background: var(--bg-dark);
+            color: #E8D8C4;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(86, 28, 36, 0.3);
+            width: 100%;
+        }
+
+        .btn-accept:disabled {
+            background: #ccc;
+            color: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none !important;
+        }
+
+        .btn-accept:not(:disabled):hover {
+            background: #3d1218;
+            transform: scale(1.02);
+        }
+
+        .signature-section {
+            margin-top: 40px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            text-align: center;
+            color: var(--accent);
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: 1s;
+        }
+
+        .error-msg {
+            color: var(--accent);
+            font-size: 0.8rem;
+            margin-top: 10px;
+            opacity: 0;
+            transition: 0.3s;
+            height: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .term {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="stamp-header">
+            <div class="seal">Official<br>Draft</div>
+            <h1>The Great Friendship Agreement</h1>
+            <p class="subtitle">2026 Edition • Signed under emotional duress</p>
+        </div>
+
+        <div class="content">
+            <p style="margin-bottom: 25px; font-style: italic; font-size: 0.9rem; text-align: center; color: #555;">
+                By checking the boxes below, the subscriber acknowledges that resistance is futile:
+            </p>
+
+            <ul class="terms-list">
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 1: The No Escape Act</span>
+                        You are NOT allowed to end this friendship anytime this year. No rage quitting, no disappearing,
+                        no "I need space forever." This friendship is on annual lockdown.
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 2: Hurt Feelings Emergency Protocol</span>
+                        If anything I do hurts you, you must tell me immediately. You may take a break to process, but
+                        Max Break = 24 hours. Not 25. Not "kal dekhte hain." Not ghost mode.
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 3: Business Hours Reply Policy</span>
+                        Replies should come within reasonable business hours. We understand sleep, exams, mental health,
+                        and occasional social battery death, but don't push it.
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 4: Shitty Yap Acceptance Clause</span>
+                        You are legally obligated to listen to my nonsense yapping. No judging. No "why are you like
+                        this." Just nod and survive.
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 5: Daily Emotional Reporting</span>
+                        You must tell me how your day was, ache se. No dry "theek tha." You gotta open up—slowly,
+                        safely, dramatically if needed.
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 6: Physical Safety Regulation</span>
+                        In the rare event that we meet IRL, you are strictly forbidden from beating me. Play fighting
+                        excluded, dominance not allowed.
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 7: The 'Pyaar Se Baat' Mandate</span>
+                        You must talk to me nicely, with love. Tone police will be active 24/7. Rude behavior = instant
+                        emotional fine.
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 8: Relationship Disclosure Policy</span>
+                        If you get a crush, get a girlfriend, get married, or get secretly engaged in a K-drama way, I
+                        must be informed FIRST. No exceptions.
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 9: Random Content Supply</span>
+                        You are required to send random voice notes, useless videos, and "this reminded me of you"
+                        content to maintain friendship freshness.
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 10: Promise Breaker Counter</span>
+                        The Promise Breaker Count must NOT increase this year. One more strike and I will remember
+                        forever (and mention it randomly).
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 11: Man Period Advance Notice</span>
+                        If you are entering your man period / emotional chaos phase, you must inform me in advance so I
+                        can mentally prepare.
+                    </span>
+                </li>
+
+                <li class="term" onclick="toggleCheck(this)">
+                    <div class="checkbox"></div>
+                    <span>
+                        <span class="bold">Clause 12: Official Title Acceptance</span>
+                        You hereby accept the sacred tag of "babygirl." Full statement acknowledged as: "Nomi nomi is
+                        Alfi's babygirl." No takebacks.
+                    </span>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="action-area">
+            <button class="btn-accept" id="signBtn" onclick="signContract()" disabled>Sign & Accept</button>
+            <div class="error-msg" id="errorMsg">Scroll down & check all boxes to proceed!</div>
+        </div>
+
+        <div class="signature-section" id="signature">
+            Signed by Nomi Nomi ❤️<br>
+            <span style="font-size: 0.8rem; color: #333; font-family: sans-serif;">Status: Officially Bound</span>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleCheck(element) {
+            element.classList.toggle('checked');
+            checkStatus();
+        }
+
+        function checkStatus() {
+            const terms = document.querySelectorAll('.term');
+            const signBtn = document.getElementById('signBtn');
+            const errorMsg = document.getElementById('errorMsg');
+
+            let allChecked = true;
+            terms.forEach(term => {
+                if (!term.classList.contains('checked')) {
+                    allChecked = false;
+                }
+            });
+
+            if (allChecked) {
+                signBtn.disabled = false;
+                signBtn.innerText = "Sign & Accept";
+                errorMsg.style.opacity = '0';
+            } else {
+                signBtn.disabled = true;
+                signBtn.innerText = "Sign & Accept (Locked)";
+            }
+        }
+
+        function signContract() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            var interval = setInterval(function () {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) { return clearInterval(interval); }
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+            }, 250);
+
+            const btn = document.getElementById('signBtn');
+            btn.innerText = "Processing...";
+
+            setTimeout(() => {
+                btn.style.display = 'none';
+                document.querySelector('.stamp-header').innerHTML = '<div class="seal" style="border-color:#27ae60; color:#27ae60; transform:rotate(0deg); border-width:4px;">APPROVED</div><h1>Contract Bound!</h1>';
+                document.getElementById('signature').style.opacity = '1';
+                document.getElementById('signature').style.transform = 'scale(1.1)';
+
+                // Redirect to final.html after 2 seconds
+                setTimeout(() => {
+                    window.location.href = "final.html";
+                }, 2000);
+
+            }, 1500);
+        }
+    </script>
+</body>
+
+</html>

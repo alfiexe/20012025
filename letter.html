@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Nomi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Dancing+Script:wght@500&family=Poppins:wght@300&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #561C24;
+            --bg-light: #6D2932;
+            --paper: #F2E8DC;
+            --text: #2b0e12;
+            --accent: #c0392b;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            background: radial-gradient(circle, var(--bg-light) 0%, var(--bg-dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .envelope-container {
+            background: var(--paper);
+            max-width: 600px;
+            width: 100%;
+            padding: 50px;
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            /* Paper texture */
+            background-image: linear-gradient(#e6ded3 1px, transparent 1px);
+            background-size: 100% 28px;
+            animation: floatUp 1.5s ease-out;
+        }
+
+        /* Tape effect at top */
+        .tape {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            width: 120px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--text);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Audio Player Styling */
+        .audio-wrapper {
+            background: rgba(86, 28, 36, 0.1);
+            padding: 15px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            border: 1px solid rgba(86, 28, 36, 0.2);
+        }
+
+        .audio-label {
+            font-size: 0.8rem;
+            margin-right: 15px;
+            font-weight: bold;
+            color: var(--bg-dark);
+        }
+
+        /* The Letter Text */
+        .letter-text {
+            font-family: 'Dancing Script', cursive;
+            /* Handwritten font */
+            font-size: 1.4rem;
+            line-height: 1.8;
+            /* Matches the line background */
+            color: #333;
+        }
+
+        .highlight {
+            color: var(--bg-dark);
+            font-weight: bold;
+            background: rgba(255, 255, 0, 0.2);
+            /* Slight highlighter effect */
+            padding: 0 5px;
+        }
+
+        .signature {
+            text-align: right;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            margin-top: 50px;
+            color: var(--bg-dark);
+        }
+
+        .ps {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        @keyframes floatUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* BUTTON STYLE */
+        .next-btn {
+            background: var(--bg-dark);
+            color: var(--paper);
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: 0.3s;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .next-btn:hover {
+            transform: scale(1.05);
+            background: #6D2932;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .envelope-container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .letter-text {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="envelope-container">
+        <div class="tape"></div>
+
+        <h1>Dear Nomi...</h1>
+
+        <div class="audio-wrapper">
+            <span class="audio-label">PLAY ME 🎧</span>
+            <audio controls>
+                <source src="wish1.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <div class="letter-text">
+            <p>Hiii Assalamualaikum,</p>
+
+            <p>Ik bewajah itna likh rhi but mann kra actually yk na I love to express haina hainaa… I wanted to say that
+                thankyou so much for existinggg, thankyou so much for being the way you are.</p>
+
+
+            <p>Idk I’m just so thankful and grateful to Allah taa’ala that somehow he gave me you, this <span
+                    class="highlight">cutie patootie babygirl</span>, who is older than me but always made me forget
+                that he’s olderrr.</p>
+
+            <p>Ufff can’t believe it’s already been 1 yr... kitni jldi time gya nhi? I can't
+                forget how unsure I was about replying to you on that app, pr chlein zindagi me ek kaam to
+                sahi se kiya maine i’m proud of myself. Haan haan thik h i’m lucky to have you, end of the
+                debate, full hawa me udte rhte hmphhh. </p>
+
+            <p>Lekin na ek number ke <span class="highlight">Promise Breaker</span> hain aap kasam se. Itna kitna
+                promises tode hain, hmphh uske liye to mujhe alg se gussa hona chahiye aur unwanted feel krane ke liye
+                bhi, jis din chli jaungi na tab pta chlega aapko, pr
+                thik h aapko koi frk nhi padne wala chordein vo sb kaam ki baat ye ki i wanted to say that
+                thank you so much for guiding me and helping me in making decisions for my dumb
+                problems. </p>
+
+            <p>But haan you gotta agree ki aap sachii khadoos hain haan!! uss time mujhe bhi bht gussa ata pr okay
+                kabhi kabhii you’re so sweet ekdam gulab jamun ki trh toh usse cancel ho jata. Even though aapne mujhe
+                bht bura bura bola hai almost gaali hi smjhein aur bht baar rulaya bhi hai uske liye i’ll always hate
+                you, aur
+                abhi bhii uska soch kr bura lgta pr thik h me aapko bura nhi bol skti na jaise aap bole the.</p>
+
+            <p> Khairrr jo bhi ho in the end sulah ho jaati vo kaafi haiii. No matter what, I love to irritate
+                you and sometimes I do become clingy, uska kya kr skte hain mujhe nhi pta pr mujhe aapko
+                pareshan krne me bht maza aata hai, i love troubling you. ik may be humari friendship zyda
+                saal na chle pr i always wanted ki ye kisi bad note pr khtm bhi na ho, i adore you, i adore
+                you the most, and again i’ll say if you were a girl i would never ever let you go pr yahaan
+                masla aa jata na, aap ek pyaare se handsome se ladke hain ufff kaash i can have you forever.
+                Khairrr!! Let’s enjoy the time we have tb tk, okay okay bht emotional huaaaaaa~ Aaage ka
+                Allahh maalik hain vo sambhaal leinge jo hoga.</p>
+
+            <p>Chlein ab point pr aate hain.... <strong>Noman-e-tandoor</strong> ek baat btayein ye jo aap <span
+                    class="highlight">Mirza-e-Ghalib</span> ban kr rhte hain vo kis khushi me rhte? haan?</p>
+
+            <p>Itna sad nhi rha karein noman aap mujhe vaise hi nhi btate pr koi baat nhi btana to aapko padegaaa. I
+                know you'll make new friends aur busy bhi honge you'll forget me anyway which is bad pr koi baat nhi...
+            </p>
+
+            <p><strong>I'll miss you and I always do, me kabhi jhooth nhi bolti.</strong></p>
+
+            <p>Bas itna hi kehna thaaaaaa aisehi nomi nomi ban kr rhein, okay my handsome boyyy!!! Mere saal poora ek
+                saal guzara hai achievement to haiiii!!!</p>
+        </div>
+
+        <div class="signature">
+            - Alfi ~
+        </div>
+
+        <div class="ps">
+            <a href="next.html" class="next-btn">One last thing for you</a>
+        </div>
+    </div>
+
+</body>
+
+</html>
